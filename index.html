@@ -5,88 +5,51 @@
     <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
     <title>驚喜刮刮樂 - 文山區公所政風室</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
-
     <style>
-        /* 基礎設定：禁止頁面滾動，確保畫面滿版 */
+        /* 基礎設定 */
         html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #fff; }
         .container { position: relative; width: 100vw; height: 100vh; }
         
-        /* 底層驚喜內容區：負責將文字與圖片水平垂直置中 */
         .text-layer { 
-            position: absolute; 
-            width: 100%; 
-            height: 100%; 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: center; /* 垂直置中控制 */
-            align-items: center;     /* 水平置中控制 */
-            z-index: 1; 
-            background-color: #ffffff; 
+            position: absolute; width: 100%; height: 100%; 
+            display: flex; flex-direction: column; 
+            justify-content: center; align-items: center; 
+            z-index: 1; background-color: #ffffff; 
         }
 
-        /* 📝 文字樣式調整區 */
         #msg { 
-          
-            /* 🚩 在這裡修改字體樣式 */
-            /* 標楷體請用: "DFKai-SB", "標楷體", serif */
-            /* 新細明體請用: "PMingLiU", "新細明體", serif */
             font-family: "DFKai-SB", "標楷體", serif;
-        
-            font-size: 6vw;          /* 🚩 調整字體大小 (vw 是螢幕寬度比例) */
-            color: #8c1f28;          /* 🚩 調整文字顏色 */
+            font-size: 7vw;          /* 🚩 調整字體大小 */
+            color: #8c1f28; 
             font-weight: bold; 
-            line-height: 1.2; 
-            text-align: center; 
-            margin-bottom: 5px;    /* 🚩 調整文字與下方圖片的距離 */
-            order: 1;                /* 確保文字顯示在最上方 */
+            line-height: 1.2; text-align: center; 
+            margin-bottom: 10px; order: 1;
         }
 
-        /* 🖼️ 圖片樣式調整區 */
         .surprise-img { 
-            width: 85vw;             /* 🚩 調整圖片寬度比例 */
-            max-width: 500px;        /* 🚩 限制在電腦上顯示的最大寬度 */
-            height: auto; 
-            border-radius: 15px;     /* 🚩 調整圖片圓角 */
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
-            display: none; 
-            margin-top: 30px;        /* 🚩 調整圖片向上推的距離 (數值越大圖片越往下) */
-            order: 2;                /* 確保圖片在文字下方 */
+            width: 85vw; max-width: 500px; height: auto; 
+            border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+            display: none; margin-top: 20px; order: 2;
         }
         
-        /* 🏛️ 底部簽名標籤 */
         .signature { 
-            background: #003366; 
-            color: #ffffff; 
-            padding: 8px 20px; 
-            border-radius: 50px; 
-            font-size: 14px;         /* 🚩 調整簽名文字大小 */
-            font-weight: bold; 
-            font-family: sans-serif; 
-            margin-top: 20px;        /* 🚩 調整簽名與圖片的距離 */
-            order: 3;
+            background: #003366; color: #ffffff; padding: 8px 25px; 
+            border-radius: 50px; font-size: 14px; font-weight: bold; 
+            font-family: sans-serif; margin-top: 25px; order: 3;
         }
 
-        /* 畫布層：灰色的刮刮樂塗層 */
         canvas { position: absolute; top: 0; left: 0; z-index: 100; touch-action: none; cursor: crosshair; }
         
-        /* 🚩 提示層：刮除前的教學動畫 */
         #hint-layer { 
             position: absolute; width: 100%; height: 100%; 
             display: flex; flex-direction: column; justify-content: center; align-items: center; 
-            z-index: 200; 
-            pointer-events: none; transition: opacity 0.5s; 
+            z-index: 200; pointer-events: none; transition: opacity 0.5s; 
         }
         .eraser-icon { font-size: 60px; animation: swipe 1.5s infinite ease-in-out; }
         .hint-text { 
             color: white; font-size: 18px; margin-top: 15px; font-weight: bold; 
-            background: rgba(0,0,0,0.4); padding: 8px 20px; border-radius: 25px;
-            font-family: sans-serif;
+            background: rgba(0,0,0,0.5); padding: 10px 20px; border-radius: 25px;
         }
-        
-        /* 提示圖示左右滑動的動畫 */
         @keyframes swipe { 0% { transform: translateX(-50px) rotate(-15deg); } 50% { transform: translateX(50px) rotate(15deg); } 100% { transform: translateX(-50px) rotate(-15deg); } }
     </style>
 </head>
@@ -95,105 +58,62 @@
 <div class="container">
     <div class="text-layer">
         <span id="msg">載入中...</span>
-        <img id="pic" class="surprise-img" src="" alt="Surprise">
+        <img id="pic" class="surprise-img" src="" alt="驚喜圖片載入失敗">
         <div class="signature">🏛️ 文山區公所政風室</div>
     </div>
-
     <div id="hint-layer">
         <div class="eraser-icon">🧼</div>
         <div class="hint-text">擦除螢幕看驚喜，每次都不一樣呦</div>
     </div>
-
     <canvas id="c"></canvas>
 </div>
 
 <script>
-    /**
-     * 🏁 專案簽名：文山區公所政風室自製
-     */
-
-    /* ============================================================
-       🚩 【 1. 內容設定區 】 - 在這裡修改或增加刮開後的文字與圖片
-       ============================================================ */
+    // 🚩 內容設定區：已移除不穩定的 Token，並修正路徑
     const data = [
-         { 
-            text: "反貪宣導", 
-            img: "https://raw.githubusercontent.com/ws20252026/Lottery-v2-/refs/heads/main/%E5%8F%8D%E8%B2%AA%E5%AE%A3%E5%B0%8E.png?token=GHSAT0AAAAAADXCNYRF7U7UTFXLQYPTOK6I2NKO2YA" 
-        },
-        { 
-            text: "公務員赴陸宣導", 
-            img: "https://raw.githubusercontent.com/ws20252026/Lottery-v2-/refs/heads/main/%E5%85%AC%E5%8B%99%E5%93%A1%E8%B5%B4%E9%99%B8%E6%8E%A1%E5%85%A8%E9%9D%A2%E8%A8%B1%E5%8F%AF%E5%88%B6.jpg" 
-        },
-        { 
-            text: "公務機密宣導", 
-            img: "https://raw.githubusercontent.com/ws20252026/Lottery-v2-/refs/heads/main/%E5%85%AC%E5%8B%99%E6%A9%9F%E5%AF%86.jpg?token=GHSAT0AAAAAADXCNYRE4FZ2ZMY5KJL64LMU2NKO3IQ"     
-        },
-         { 
-            text: "公益揭弊者保護法宣導", 
-            img: "https://raw.githubusercontent.com/ws20252026/Lottery-v2-/refs/heads/main/%E5%85%AC%E7%9B%8A%E6%8F%AD%E5%BC%8A%E8%80%85%E4%BF%9D%E8%AD%B7%E6%B3%95.png?token=GHSAT0AAAAAADXCNYRF2XDRCSUDFCFKCMLS2NKO3RQ" 
-        },
-        { 
-            text: "反詐騙／消費者保護法宣導", 
-            img: "https://raw.githubusercontent.com/ws20252026/Lottery-v2-/refs/heads/main/%E5%88%A5%E7%95%B6%E4%BB%98%E9%8C%A2%E8%82%A5%E7%BE%8A.png?token=GHSAT0AAAAAADXCNYREIKL2T73AOIDWQQVI2NKO3ZQ" 
-        },
-        { 
-            text: "廉政署透明晶質獎宣導", 
-            img: "https://raw.githubusercontent.com/ws20252026/Lottery-v2-/refs/heads/main/%E9%80%8F%E6%98%8E%E6%99%B6%E8%B3%AA%E7%8D%8E%E7%B0%A1%E4%BB%8B.jpg?token=GHSAT0AAAAAADXCNYREYJU5Q44YIVHYZ5M42NKO4AA" 
-        },
-         { 
-            text: "反賄選宣導", 
-            img: "https://raw.githubusercontent.com/ws20252026/Lottery-v2-/refs/heads/main/%E5%8F%8D%E8%B3%84%E9%81%B8.png" 
-        },
-        // 提示：若要增加項目，請複製上面的格式並確保中間有英文逗號
+        { text: "反貪宣導", img: "https://raw.githubusercontent.com/ws20252026/Lottery-v2-/main/%E5%8F%8D%E8%B2%AA%E5%AE%A3%E5%B0%8E.png" },
+        { text: "公務員赴陸宣導", img: "https://raw.githubusercontent.com/ws20252026/Lottery-v2-/main/%E5%85%AC%E5%8B%99%E5%93%A1%E8%B5%B4%E9%99%B8%E6%8E%A1%E5%85%A8%E9%9D%A2%E8%A8%B1%E5%8F%AF%E5%88%B6.jpg" },
+        { text: "公務機密宣導", img: "https://raw.githubusercontent.com/ws20252026/Lottery-v2-/main/%E5%85%AC%E5%8B%99%E6%A9%9F%E5%AF%86.jpg" },
+        { text: "公益揭弊者保護法宣導", img: "https://raw.githubusercontent.com/ws20252026/Lottery-v2-/main/%E5%85%AC%E7%9B%8A%E6%8F%AD%E5%BC%8A%E8%80%85%E4%BF%9D%E8%AD%B7%E6%B3%95.png" },
+        { text: "反詐騙宣導", img: "https://raw.githubusercontent.com/ws20252026/Lottery-v2-/main/%E5%88%A5%E7%95%B6%E4%BB%98%E9%8C%A2%E8%82%A5%E7%BE%8A.png" },
+        { text: "廉政署透明晶質獎宣導", img: "https://raw.githubusercontent.com/ws20252026/Lottery-v2-/main/%E9%80%8F%E6%98%8E%E6%99%B6%E8%B3%AA%E7%8D%8E%E7%B0%A1%E4%BB%8B.jpg" },
+        { text: "反賄選宣導", img: "https://raw.githubusercontent.com/ws20252026/Lottery-v2-/main/%E5%8F%8D%E8%B3%84%E9%81%B8.png" }
     ];
 
-    /* ============================================================
-       ⚙️ 【 2. 核心功能區 】 - 控制筆刷、畫布與互動邏輯
-       ============================================================ */
     const cvs = document.getElementById('c'), ctx = cvs.getContext('2d');
     const msg = document.getElementById('msg'), pic = document.getElementById('pic'), hint = document.getElementById('hint-layer');
     let drawing = false, firstTouch = true;
 
     function init() {
-        // 隨機抽選一組資料
         const item = data[Math.floor(Math.random() * data.length)];
         msg.innerHTML = item.text; 
-        
-        // 判斷是否有圖片網址
-        if(item.img && item.img.trim() !== "") { 
+        if(item.img) { 
             pic.src = item.img; 
             pic.style.display = "block"; 
-        } else {
-            pic.style.display = "none";
         }
 
-        // 設定畫布大小與螢幕同步
         cvs.width = window.innerWidth;
         cvs.height = window.innerHeight;
         
-        // 🚩 繪製刮刮樂塗層 (目前為深灰色 #1e1e1e)
+        // 🚩 改為新春紅底色
         ctx.globalCompositeOperation = 'source-over';
-        ctx.fillStyle = '#1e1e1e'; 
+        ctx.fillStyle = '#d63031'; 
         ctx.fillRect(0, 0, cvs.width, cvs.height);
         
-        // 🚩 筆刷屬性設定
         ctx.globalCompositeOperation = 'destination-out';
-        ctx.lineWidth = 150;      // 🚩 調整擦除筆刷大小 (數值越大越容易刮開) 
-        ctx.lineCap = 'round';   // 筆刷末端圓潤
-        ctx.lineJoin = 'round';  // 筆刷轉角圓潤
+        ctx.lineWidth = 100;      // 🚩 筆刷調整為 100，適中好刮
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
     }
 
-    // 取得觸控或滑鼠座標
     function getPos(e) {
         const cx = e.touches ? e.touches[0].clientX : e.clientX;
         const cy = e.touches ? e.touches[0].clientY : e.clientY;
         return { x: cx, y: cy };
     }
 
-    // 開始刮除
     function start(e) {
         drawing = true;
-        // 第一次觸碰時隱藏提示層
         if (firstTouch) { 
             hint.style.opacity = '0'; 
             setTimeout(() => hint.style.display = 'none', 500);
@@ -204,19 +124,16 @@
         ctx.moveTo(p.x, p.y);
     }
 
-    // 進行刮除中
     function move(e) {
         if (!drawing) return;
-        e.preventDefault(); // 防止手機滑動時畫面跟著捲動
+        e.preventDefault();
         const p = getPos(e);
         ctx.lineTo(p.x, p.y);
         ctx.stroke();
     }
 
-    // 停止刮除
     function stop() { drawing = false; }
     
-    // 事件監聽：支援電腦滑鼠與手機觸控
     cvs.addEventListener('mousedown', start);
     cvs.addEventListener('mousemove', move);
     window.addEventListener('mouseup', stop);
@@ -224,20 +141,7 @@
     cvs.addEventListener('touchmove', move, {passive: false});
     cvs.addEventListener('touchend', stop);
     
-    // 網頁載入完成後初始化
     window.onload = init;
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
